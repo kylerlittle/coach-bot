@@ -8,7 +8,7 @@
 - Lucy Tran
 - Shusanta Bhattarai
 
-## Developor Usage
+## Developer Usage
 Set up environment on Ubuntu.
 ```
 source ./scripts/setup.sh
