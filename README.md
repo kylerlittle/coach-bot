@@ -8,6 +8,34 @@
 - Lucy Tran
 - Shusanta Bhattarai
 
+## Developor Usage
+Set up environment on Ubuntu.
+```
+source ./scripts/setup.sh
+```
+Activate python virtual environment.
+```
+source ./venv/bin/activate
+```
+Ensure running ```which python``` prints the same as ```pwd``` + '/venv/bin/python`.
+
+Next, install dependencies.
+```
+pip install -r requirements.txt
+```
+Run application.
+```
+python coach-bot
+```
+Run tests.
+```
+python tests
+```
+Deactivate environment
+```
+deactivate
+```
+
 ## Description
 This is a chat bot that's a personal coach for people who want to work out, 
 eat better, and/or live healthier. Specifically, the coach bot's target customer

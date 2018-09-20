@@ -1,7 +1,9 @@
 """
-If not all details are provided to perform the action,
-ASSUME REASONABLE DEFAULTS. We will generally confirm
-with the user before doing something.
+:notes
+> If not all details are provided to perform the action,
+  assume reasonable default. We will generally confirm
+  with the user before doing something.
+> This is a big TODO.
 """
 
 
