@@ -160,7 +160,6 @@ test_texts = ["Schedule me a leg workout for 5PM tomorrow",
     "Display my normal calendar",
     "Show my workout statistics from yesterday",
     "Set feedback for my workout earlier at 3PM"]
-action_list = []
 
 for test_text in test_texts:
     tokenized = return_tokenized([test_text])
