@@ -17,7 +17,7 @@ Activate python virtual environment.
 ```
 source ./venv/bin/activate
 ```
-Ensure running ```which python``` prints the same as ```pwd``` + '/venv/bin/python`.
+Ensure running ```which python``` prints the same as ```pwd``` + '/venv/bin/python'.
 
 Next, install dependencies.
 ```
@@ -31,7 +31,7 @@ Run tests.
 ```
 python tests
 ```
-Deactivate environment
+Deactivate environment.
 ```
 deactivate
 ```
