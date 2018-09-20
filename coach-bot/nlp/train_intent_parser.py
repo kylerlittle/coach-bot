@@ -21,6 +21,8 @@ import random
 import spacy
 from pathlib import Path
 
+MODEL_DIR = './model'
+
 
 # training data: texts, heads and dependency labels
 # for no relation, we simply chose an arbitrary dependency label, e.g. '-'
@@ -58,13 +60,17 @@ TRAIN_DATA = [
     ("show my workout schedule for today", {
         'heads': [0, 3, 3, 0, 3, 3],
         'deps': ['ROOT', '-', 'ATTRIBUTE', 'WHAT', '-', 'TIME']
+    }),
+    ("plan a workout for 5PM today", {
+        'heads': [0, 2, 0, 2, 5, 2],
+        'deps': ['ROOT', '-', 'WHAT', '-', 'TIME', 'TIME']
     })
 ]
 
 
 @plac.annotations(
     model=("en", "option", "m", str),
-    output_dir=("./model", "option", "o", Path),
+    output_dir=(MODEL_DIR, "option", "o", Path),
     n_iter=("Number of training iterations", "option", "n", int))
 def main(model=None, output_dir=None, n_iter=5):
     """Load the model, set up the pipeline and train the parser."""
@@ -118,11 +124,10 @@ def test_model(nlp):
              "show me my workout schedule for tomorrow",
              "display my current calendar"]
     docs = nlp.pipe(texts)
-    for doc in docs:
+    for doc in docs:  # doc is a spaCy Token object
         print(doc.text)
         print([(t.text, t.dep_, t.head.text) for t in doc if t.dep_ != '-'])
 
-
 if __name__ == '__main__':
-    plac.call(main)
+    plac.call(main, ['-m', 'en', '-o', MODEL_DIR, '-n', '5'])
 
