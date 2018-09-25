@@ -1,5 +1,5 @@
 import datetime
-from CalenderClassTest import *
+from CalendarClassTest import *
 from datetime import timedelta
 
 class Calendar:

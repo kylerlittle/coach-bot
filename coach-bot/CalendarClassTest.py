@@ -1,5 +1,5 @@
 import datetime
-from CalenderClass import *
+from CalendarClass import *
 
 class MockUser:
 	def __init__(self,name):
