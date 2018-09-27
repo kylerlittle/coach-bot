@@ -35,4 +35,8 @@ class Calendar:
 		for i in events:
 			if (isinstance(i, Workout) and (i._start == day)):
 				print(i)
+	def saveCalendar(self):
+		#TODO: SAVE CALENDAR AS XML
+		pass
+	
 
