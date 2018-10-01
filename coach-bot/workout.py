@@ -23,5 +23,8 @@ class Workout(Event):
         self._feedback(feedBack)
 
     def __str__(self):
-        #fill this in 
-        return (str("TODO"))    
+        return str(
+            ("----------\n feedback: {0}\n calories: {1}\n tags: {2}",
+            self._feedback, self._calories, self._tags)
+        ) 
+        
