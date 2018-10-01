@@ -1,8 +1,8 @@
 from enum import Enum
 
 class Rating(Enum):
-    oneStar = 0
-    twoStar = 1
-    threeStar = 2
-    fourStar = 3
-    fiveStar = 4
+    oneStar = 1
+    twoStar = 2
+    threeStar = 3
+    fourStar = 4
+    fiveStar = 5
