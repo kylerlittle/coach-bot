@@ -1,5 +1,5 @@
 import datetime
-from user import *
+from user import User
 from datetime import timedelta
 
 class Calendar:

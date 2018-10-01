@@ -6,7 +6,7 @@
 > This is a big TODO.
 """
 import sys
-from CalendarClass import Calendar
+from calendar import Calendar
 # Generic Action class
  
 class Action:

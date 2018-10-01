@@ -47,22 +47,22 @@ class Event:
             self._startDateTime, self._endDateTime, self._user)
         )
     
-    def getCalendarId():
+    def getCalendarId(self):
         return self._calendarId
     
-    def getId():
+    def getId(self):
         return self._id
     
-    def getDescription():
+    def getDescription(self):
         return self._description
     
-    def getLocation()
+    def getLocation(self):
         return self._location
     
-    def getStartDate():
+    def getStartDate(self):
         return self._startDateTime
     
-    def getEndDate():
+    def getEndDate(self):
         return self._endDateTime
 
 

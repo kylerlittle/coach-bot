@@ -75,6 +75,20 @@ def main():
         else:
             print("\nI'm sorry, that wasn't one of the options, let's try that again!\n")
 
+    #coach loop
+    while True:
+        print("Hello and welcome to coachbot what can I do for you?")
+        try:
+            input = input()
+            #exit if the user just hits return
+            if(input == ""):
+                exit(0)
+            action = NaturalLanguageProcessor.process_input(input)
+            action.execute()
+            print("\n\n")
+        except InputError:
+            print("There was an error with that line please try again")
+    
     # BASIC TESTING
     test_texts = ["Schedule me a leg workout for 5PM tomorrow",
                   "Display my workout calendar",
