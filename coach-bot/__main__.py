@@ -79,15 +79,15 @@ def main():
     while True:
         print("Hello and welcome to coachbot what can I do for you?")
         try:
-            input = input()
+            _input = input()
             #exit if the user just hits return
-            if(input == ""):
+            if(_input == ""):
                 exit(0)
-            action = NaturalLanguageProcessor.process_input(input)
+            action = NaturalLanguageProcessor.process_input(_input)
             action.execute()
             print("\n\n")
         except InputError:
-            print("There was an error with that line please try again")
+            print("There was an error with that line; please try again")
     
     # BASIC TESTING
     test_texts = ["Schedule me a leg workout for 5PM tomorrow",
