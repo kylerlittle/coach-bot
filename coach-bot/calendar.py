@@ -2,10 +2,23 @@ import datetime
 from user import *
 from datetime import timedelta
 
+class Event:
+	def __init__(self,name,start):
+		self._name=name
+		self._start=start
+	def __str__(self):
+		print('Event:' + self._name + '    ' + self._start)
+
+class Workout(Event):
+	def __init__(self,name,start):
+		Event.__init__(self,name,start)
+	def __str__(self):
+		return ('Workout:' + self._name + '    ' + str(self._start))
+
 class Calendar:
 	_events = []
-	_user = None
-	def __init__(self,user):
+
+	def __init__(self,user=None):
 		self._user = user
 	def __str__(self):
 		print(self._events)
@@ -28,11 +41,11 @@ class Calendar:
 			if not inserted:
 				self._events.append(evnt)
 	def showWorkouts(self):
-		for i in events:
+		for i in self._events:
 			if (isinstance(i, Workout)):
 				print(i)
 	def showWorkoutsDay(self,day):
-		for i in events:
+		for i in self._events:
 			if (isinstance(i, Workout) and (i._start == day)):
 				print(i)
 	def saveCalendar(self):
