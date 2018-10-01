@@ -1,5 +1,5 @@
 
-from calendar import Calendar
+from event_calendar import Calendar
 class User():
 
     def __init__(self):

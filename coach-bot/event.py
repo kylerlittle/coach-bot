@@ -3,8 +3,6 @@ from datetime import timedelta
 from user import User
 
 class Event:
-    
-
     def __init__(self):
         self._id = -1
         self._calendarId = -1

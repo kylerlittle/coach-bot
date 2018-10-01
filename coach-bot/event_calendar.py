@@ -1,19 +1,20 @@
 import datetime
-from user import User
+# from user import User
 from datetime import timedelta
 
 class Calendar:
 	_events = []
 
 	def __init__(self,user=None):
-		self._user = user
+		# self._user = user
+		pass
 	def __str__(self):
 		s = ""
 		for i in self._events:
 			s += str(i)
 		return s
-	def getUser(self):
-		return self._user
+	# def getUser(self):
+	# 	return self._user
 	def addToCalendar(self, evnt):
 		#if not isinstance(evnt, Event):
 		if False:
@@ -40,7 +41,7 @@ class Calendar:
 				print(i)
 	def showEventsDay(self,day):
 		for i in events:
-			if i._startDateTime == day)):
+			if i._startDateTime == day:
 				print(i)
 	def findEvent(self,iden):
 		for i in events:
