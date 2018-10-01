@@ -23,6 +23,10 @@ Next, install dependencies.
 ```
 pip install -r requirements.txt
 ```
+Before running the application, we need to train our model. Of course, in production, this will already be readily available.
+```
+python coach-bot/nlp/train_intent_parser.py
+```
 Run application.
 ```
 python coach-bot

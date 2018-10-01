@@ -7,20 +7,6 @@ class MockUser:
 	def __str__(self):
 		print(self._name)
 
-class Event:
-	def __init__(self,name,start):
-		self._name=name
-		self._start=start
-	def __str__(self):
-		print('Event:' + self._name + '    ' + self._start)
-
-
-class Workout(Event):
-	def __init__(self,name,start):
-		Event.__init__(self,name,start)
-	def __str__(self):
-		return ('Workout:' + self._name + '    ' + str(self._start))
-
 class TestCalendar:
 	def setup(self):
 		self.user = None
