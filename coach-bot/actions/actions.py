@@ -6,7 +6,7 @@
 > This is a big TODO.
 """
 import sys
-from __calendar__ import Calendar
+from event_calendar import Calendar
 # Generic Action class
  
 class Action:
@@ -29,8 +29,8 @@ class HelpAction(Action):
     def execute(self):
         print( "Set your calorie intake and chose a workout!")
 
-class ScheduleWorkoutAction(Action): ''' need help from chris '''
-def execute(self):
+class ScheduleWorkoutAction(Action):
+    def execute(self):
         print(self.details)
         
 class DisplayCalendarAction(Action):
