@@ -1,13 +1,7 @@
 import datetime
-from user import *
+from user import User
 from datetime import timedelta
-
-class Event:
-	def __init__(self,name,start):
-		self._name=name
-		self._start=start
-	def __str__(self):
-		print('Event:' + self._name + '    ' + self._start)
+from event import Event
 
 class Workout(Event):
 	def __init__(self,name,start):
