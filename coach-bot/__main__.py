@@ -2,7 +2,6 @@ from nlp.tokens_to_action import NaturalLanguageProcessor, InputError
 import xml.etree.ElementTree as ET
 from user import User
 
-
 def main():
     print('Welcome to coachbot!')
     user = User()
@@ -18,7 +17,7 @@ def main():
 
             user.User(email, fName, lName)
 
-            tree = ET.parse('Users.xml')
+            tree = ET.parse('coach-bot/Users.xml')
             root = tree.getroot()
 
             ##Determine new id for user
@@ -47,7 +46,7 @@ def main():
 
 
             root.append(newUser)
-            tree.write('Users.xml')
+            tree.write('coach-bot/Users.xml')
 
             print("User {} successfully added!".format(user.getFullName()))
             break
@@ -56,7 +55,7 @@ def main():
             print("\nLet's work with an existing user!\n")
             email = input("What is your email address?: ")
 
-            tree = ET.parse('Users.xml')
+            tree = ET.parse('coach-bot/Users.xml')
             root = tree.getroot()
 
             for child in root:

@@ -1,4 +1,5 @@
 
+from CalendarClass import Calendar
 class User():
 
     def __init__(self):
@@ -16,9 +17,10 @@ class User():
         fullName = self.firstName + " " + self.lastName
         return fullName
 
-    ##def addCalendar():
-        ## TO DO
+    def addCalendar():
+        self.calendar = Calendar()
     
+    def getCalendar():
+        return self.calendar
 
-    ##def getCalendar():
-        ## TO DO
+       

@@ -4,8 +4,8 @@ from datetime import timedelta
 
 class Calendar:
 	_events = []
-	_user = None
-	def __init__(self,user):
+
+	def __init__(self,user=None):
 		self._user = user
 	def __str__(self):
 		s = ""
@@ -31,7 +31,7 @@ class Calendar:
 			if not inserted:
 				self._events.append(evnt)
 	def showWorkouts(self):
-		for i in events:
+		for i in self._events:
 			if (isinstance(i, Workout)):
 				print(i)
 	def showWorkoutsDay(self,day):

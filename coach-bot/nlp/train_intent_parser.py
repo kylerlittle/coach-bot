@@ -20,8 +20,9 @@ import plac
 import random
 import spacy
 from pathlib import Path
+import en_core_web_sm
 
-MODEL_DIR = './model'
+MODEL_DIR = './coach-bot/nlp/model'
 
 
 # training data: texts, heads and dependency labels
@@ -75,7 +76,7 @@ TRAIN_DATA = [
 def main(model=None, output_dir=None, n_iter=5):
     """Load the model, set up the pipeline and train the parser."""
     if model is not None:
-        nlp = spacy.load(model)  # load existing spaCy model
+        nlp = en_core_web_sm.load()  # load existing spaCy model
         print("Loaded model '%s'" % model)
     else:
         nlp = spacy.blank('en')  # create blank Language class
@@ -103,7 +104,7 @@ def main(model=None, output_dir=None, n_iter=5):
             print(losses)
 
     # test the trained model
-    test_model(nlp)
+    # test_model(nlp)
 
     # save model to output directory
     if output_dir is not None:
@@ -114,14 +115,14 @@ def main(model=None, output_dir=None, n_iter=5):
         print("Saved model to", output_dir)
 
         # test the saved model
-        print("Loading from", output_dir)
-        nlp2 = spacy.load(output_dir)
-        test_model(nlp2)
+        # print("Loading from", output_dir)
+        # nlp2 = spacy.load(output_dir)
+        # test_model(nlp2)
 
 
 def test_model(nlp):
     texts = ["schedule an arms workout for Thursday",
-             "show me my workout schedule for tomorrow",
+             "show me my workout schedule for today",
              "display my current calendar"]
     docs = nlp.pipe(texts)
     for doc in docs:  # doc is a spaCy Token object
