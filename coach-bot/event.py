@@ -1,5 +1,4 @@
 import datetime
-from datetime import timedelta
 from user import User
 
 class Event:
@@ -9,12 +8,12 @@ class Event:
         self._description = ""
         self._location = ""
         self._startDateTime = datetime.datetime.now()
-        self._endDateTime = datetime.datetime.now() + timedelta(min = 60)
+        self._endDateTime = datetime.datetime.now() + datetime.timedelta(minutes=60)
         self._user = User()
     
     def Event(self, id = 0, calendarId = 0, 
-    description = "", location = "", startDateTime = datetime.datetime(), 
-    endDateTime = datetime.datetime(), user = User()):
+    description = "", location = "", startDateTime = datetime.datetime.now(), 
+    endDateTime = datetime.datetime.now(), user = User()):
         self._id = id
         self._calendarId = calendarId
         self._description = description
