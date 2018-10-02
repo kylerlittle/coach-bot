@@ -6,7 +6,7 @@ def main():
     print('Welcome to coachbot!')
     user = User()
 
-    while True:
+    while False:
         userOption = input('Please select an option:\n1: New User\n2: Existing User\n3: Exit application\n::')
 
         if userOption == '1':

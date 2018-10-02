@@ -1,12 +1,12 @@
 
-from event_calendar import Calendar
+# from event_calendar import Calendar
 class User():
 
     def __init__(self):
         self.email = ""
         self.firstName = ""
         self.lastName = ""
-        self.calendar = None
+        # self.calendar = None
 
     def User(self, email="", firstName="", lastName=""):
         self.email = email
@@ -18,9 +18,11 @@ class User():
         return fullName
 
     def addCalendar(self):
-        self.calendar = Calendar()
+        pass
+        # self.calendar = Calendar()
     
     def getCalendar(self):
-        return self.calendar
+        pass
+        # return self.calendar
 
        

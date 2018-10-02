@@ -1,6 +1,6 @@
 import datetime
+from workout import Workout
 # from user import User
-from datetime import timedelta
 
 class Calendar:
 	_events = []

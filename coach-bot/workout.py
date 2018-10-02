@@ -12,8 +12,8 @@ class Workout(Event):
         Event.__init__(self)
 
     def Workout(self, id = 0, calendarId = 0, 
-    description = "", location = "", startDateTime = datetime.datetime(), 
-    endDateTime = datetime.datetime(), user = User(), feedback = "", calories = 0, tags = [""]):
+    description = "", location = "", startDateTime = datetime.datetime.now(), 
+    endDateTime = datetime.datetime.now(), user = User(), feedback = "", calories = 0, tags = [""]):
         self._feedback = feedback
         self._calories = calories
         self.tags = tags

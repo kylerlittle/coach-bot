@@ -2,15 +2,10 @@ from rating import Rating
 
 
 class FeedBack():
-    
-    def __init__(self):
-        self._rating = Rating()
-        self._comment = ""
-    
-    def FeedBack(self, rating, comment):
+    def __init__(self, rating=Rating.oneStar, comment=""):
         self._rating = rating
         self._comment = comment
-
+    
     def setRating(self, rating):
         self._rating = rating
     
