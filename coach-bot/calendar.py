@@ -4,9 +4,9 @@ from datetime import timedelta
 
 class Calendar:
 	_events = []
-
-	def __init__(self,user=None):
-		self._user = user
+	_userID;
+	def __init__(self,userID=None):
+		self._userID = userID
 	def __str__(self):
 		s = ""
 		for i in self._events:
