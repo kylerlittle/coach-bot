@@ -23,8 +23,5 @@ class Workout(Event):
         self._feedback(feedBack)
 
     def __str__(self):
-        return str(
-            ("----------\n feedback: {0}\n calories: {1}\n tags: {2}",
-            self._feedback, self._calories, self._tags)
-        ) 
+        return "----------\n feedback: {0}\n calories: {1}\n tags: {2}".format(self._feedback, self._calories, self._tags)
         
