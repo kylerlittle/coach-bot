@@ -37,12 +37,10 @@ class Event:
 
     #overwrite str
     def __str__(self):
-        return str(
-            ("----------\nid: {0}\ncalendarId: {1}\ndescription: {2}",
-            self._id, self._calendarId, self._description)+
-            ("\nstart time: {0}\nend time: {1}\nuser: {2}\n----------",
-            self._startDateTime, self._endDateTime, self._user)
-        )
+        return "----------\nid: {0}\ncalendarId: {1}\ndescription: {2}".format(
+            self._id, self._calendarId, self._description) + \
+                "\nstart time: {0}\nend time: {1}\nuser: {2}\n----------".format(
+            self._startDateTime.date(), self._endDateTime.date(), self._user)
     
     def getCalendarId(self):
         return self._calendarId
