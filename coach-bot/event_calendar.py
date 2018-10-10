@@ -1,22 +1,20 @@
 import datetime
-import xml.etree.ElementTree as ET
-from user import *
-from datetime import timedelta
+from workout import Workout
+# from user import User
 
 class Calendar:
 	_events = []
-	_userId
-	_calendarId
-	def __init__(self,userId=None, calendarId = None):
-		self._userId = userId
-		self._calendarId = calendarId
+
+	def __init__(self,user=None):
+		# self._user = user
+		pass
 	def __str__(self):
 		s = ""
 		for i in self._events:
 			s += str(i)
 		return s
-	def getUser(self):
-		return self._user
+	# def getUser(self):
+	# 	return self._user
 	def addToCalendar(self, evnt):
 		#if not isinstance(evnt, Event):
 		if False:
@@ -43,7 +41,7 @@ class Calendar:
 				print(i)
 	def showEventsDay(self,day):
 		for i in events:
-			if i._startDateTime == day)):
+			if i._startDateTime == day:
 				print(i)
 	def findEvent(self,iden):
 		for i in events:

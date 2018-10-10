@@ -75,7 +75,35 @@ def main():
         else:
             print("\nI'm sorry, that wasn't one of the options, let's try that again!\n")
 
-    # BASIC TESTING
+    # Commence the conversation with Coach Bot.
+    print("""   _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._
+ ,'_.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._`.
+( (                                                         ) )
+ ) )  Hello! I am your personal coach. Ask me to schedule  ( (
+( (   you a workout, display your current schedule, show    ) )
+ ) )  your workout stats, or give feedback on a prior      ( (
+( (   workout. Remember, ask for help if you're confused!   ) )
+ ) )                                                       ( (
+( (_.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._) )
+ `._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._,'
+""")
+
+    # Coach Bot Conversation Loop
+    while True:
+        print("What can I do for you? Hit [Return]/[Enter] to exit.")
+        try:
+            _input = input("::")
+            print("\n")   # add a newline for prettiness
+            #exit if the user just hits return
+            if(_input == ""):
+                exit(0)
+            action = NaturalLanguageProcessor.process_input(_input)
+            action.execute()
+            print("\n\n")
+        except InputError as ie:
+            print("Error processing: {input_str}\n{error_msg}".format(input_str=ie.expression, error_msg=ie.message))
+    
+    # Basic Testing -- note this is never executed in the current set-up.
     test_texts = ["Schedule me a leg workout for 5PM tomorrow",
                   "Display my workout calendar",
                   "Enter my calories for today",
