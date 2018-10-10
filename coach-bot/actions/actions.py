@@ -7,11 +7,15 @@
 > This needs a lot of work. We don't even account for which user is which, and we
   completely neglect the details that the user gives us (stored in self.details).
 """
+from pytz import timezone
+import parsedatetime
 from event_calendar import Calendar
 from workout import Workout
 from event import Event
 from feedback import FeedBack
 
+DEFAULT_TIMEZONE = "US/Pacific"
+cal = parsedatetime.Calendar()
 debug = True
 
 class ActionManager:
@@ -66,6 +70,7 @@ class HelpAction(Action):
         print("   - at 5PM tomorrow")
         print("e.g. Display my most recent workout")
 
+# Create a Workout event and add to Calendar
 class ScheduleWorkoutAction(Action):
     def execute(self):
         # Create event
@@ -78,9 +83,9 @@ class ScheduleWorkoutAction(Action):
         e.updateLocation(loc)
 
         # User verification
-        print(e) # Cannot print out Workout 
+        print(e) # Cannot print out Workout
         resume = input("Is this what you wanted to add? (y/n): ")
-        if resume == 'n':
+        while resume == 'n':
             print("Start time")
             print("End time")
             print("Description")
@@ -93,27 +98,29 @@ class ScheduleWorkoutAction(Action):
 
             # I would like to naturally process
             # what they would like to change
+            print(e)
+            resume = input("Is this what you wanted to add (y/n): ")
 
         # Add to calendar
         self.calendar.addToCalendar(e)
 
-# TODO: Get an idea of what implementation for this should be
+# Display all events on calendar
+# If a time is given, show events only at that time
 class DisplayCalendarAction(Action):
     def execute(self):
         print("Your Calendar:")
         if "time" in self.details:
-            print(self.calendar)
-            # showEventsDay is broken
-            # self.calendar.showEventsDay(self.details["time"])
-        # I would like to change this... just not sure to what
+            self.calendar.showEventsDay(self.details["time"])
         else:
             print(self.calendar)
 
-# TODO: Stats of user not ACTION
+# Display workout stats
 class DisplayWorkoutStatsAction(Action): 
     def execute(self):
         print(self.current_stats)
 
+# Display workout events on calendar
+# If a time is given, show events only at that time
 class DisplayWorkoutScheduleAction(Action):
     def execute(self):
         if "time" in self.details:
