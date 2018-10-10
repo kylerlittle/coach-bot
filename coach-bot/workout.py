@@ -1,31 +1,22 @@
 from event import Event
 from feedback import FeedBack
-from user import User
 import datetime 
 
 class Workout(Event):
 
     def __init__(self, id = 0, calendarId = 0, 
     description = "", location = "", startDateTime = datetime.datetime.now(), 
-    endDateTime = datetime.datetime.now(), user = User(), feedback = "", ):
+    endDateTime = datetime.datetime.now(), userId = -1, feedback = "", ):
         self._feedback = FeedBack()
         self._calories = 0
         self._tags = [""]
         Event.__init__(self)
-        Event.Event(id, calendarId, description, location, startDateTime, endDateTime, user)
+        Event.Event(id, calendarId, description, location, startDateTime, endDateTime, userId)
 
     def Workout(self, calories = 0, tags = [""]):
         self._feedback = feedback
         self._calories = calories
         self._tags = tags
-        
-    def Workout(self, id = 0, calendarId = 0, 
-    description = "", location = "", startDateTime = datetime.datetime.now(), 
-    endDateTime = datetime.datetime.now(), user = User(), feedback = "", calories = 0, tags = [""]):
-        self._feedback = feedback
-        self._calories = calories
-        self._tags = tags
-        Event.Event(id, calendarId, description, location, startDateTime, endDateTime, user)
 
     def setFeedBack(self, feedBack):
         self._feedback(feedBack)
