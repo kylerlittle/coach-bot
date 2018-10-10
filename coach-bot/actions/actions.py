@@ -53,33 +53,53 @@ class HelpAction(Action):
 # Create a Workout event and add to Calendar
 class ScheduleWorkoutAction(Action):
     def execute(self):
-        # Create event
-        e = Event() #Workout()
+
+        # Create workout event
+        e = Workout()
         loc = input("Enter the location: ")
+        calo = input("Enter calories to be burned: ")
         if "tags" in self.details:
             e.updateDescription(self.details["tags"])
         if "time" in self.details:
             e.updateStartTime(self.details["time"])
         e.updateLocation(loc)
+        e.setCalories(calo)
 
         # User verification
-        print(e) # Cannot print out Workout
+        #print(e) # Cannot print out Workout
         resume = input("Is this what you wanted to add? (y/n): ")
         while resume == 'n':
             print("Start time")
             print("End time")
             print("Description")
             print("Location")
+            print("Calories")
             e_change = input("What would you like to change?: ")
+            newData = input("Set it here: ")
 
-            # Not sure how to update time using user input
-            # I would like to use the function from tokens_to_action
-            # get_datetime_from_str
+            # Is there an easier way to process user input?
+            if e_change == "Start time":
+               datetime_obj, _ = cal.parseDT(datetimeString=newData, tzinfo=timezone(DEAFULT_TIMEZONE))
+               e.updateStartTime(datetime_obj) 
 
-            # I would like to naturally process
-            # what they would like to change
-            print(e)
-            resume = input("Is this what you wanted to add (y/n): ")
+            elif e_change == "End time":
+               datetime_obj, _ = cal.parseDT(datetimeString=newData, tzinfo=timezone(DEAFULT_TIMEZONE))
+               e.updateEndTime(datetime_obj)
+
+            elif e_change == "Description":
+               e.updateDescription(newData)
+
+            elif e_change == "Location":
+                e.updateLocation(newData)
+
+            elif e_change == "Calories":
+                e.setCalories(newData)
+
+            else:
+                print("Invalid request to change.")
+
+            #print(e)
+            resume = input("Retry change? (y/n): ")
 
         # Add to calendar
         self.calendar.addToCalendar(e)
