@@ -18,7 +18,7 @@ class Event:
         if(id == -1):
             self._id = random.randint(600)
         else:
-            self._id = id
+             self._id = id
         self._calendarId = calendarId
         self._description = description
         self._location = location
@@ -44,7 +44,7 @@ class Event:
         return "----------\nid: {0}\ncalendarId: {1}\ndescription: {2}".format(
             self._id, self._calendarId, self._description) + \
                 "\nstart time: {0}\nend time: {1}\nuser: {2}\n----------".format(
-            self._startDateTime.date(), self._endDateTime.date(), self._user)
+            self._startDateTime.date(), self._endDateTime.date(), self._userId)
     
     def getCalendarId(self):
         return self._calendarId
