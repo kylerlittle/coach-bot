@@ -1,5 +1,5 @@
 import datetime
-from user import User
+import random
 
 class Event:
     def __init__(self):
@@ -9,12 +9,16 @@ class Event:
         self._location = ""
         self._startDateTime = datetime.datetime.now()
         self._endDateTime = datetime.datetime.now() + datetime.timedelta(minutes=60)
-        self._user = User()
+        self._userId = -1
     
-    def Event(self, id = 0, calendarId = 0, 
+    def Event(self, id = -1, calendarId = 0, 
     description = "", location = "", startDateTime = datetime.datetime.now(), 
-    endDateTime = datetime.datetime.now(), user = User()):
-        self._id = id
+    endDateTime = datetime.datetime.now(), user = 0):
+        #generate a random int
+        if(id == -1):
+            self._id = random.randint(600)
+        else:
+            self._id = id
         self._calendarId = calendarId
         self._description = description
         self._location = location
