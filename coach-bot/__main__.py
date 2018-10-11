@@ -1,6 +1,7 @@
 from nlp.tokens_to_action import NaturalLanguageProcessor, InputError
 import xml.etree.ElementTree as ET
 from user import User
+from actions.actions import ActionManager
 
 def main():
     print('Welcome to coachbot!')
@@ -88,6 +89,9 @@ def main():
  `._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._,'
 """)
 
+    # Declare ActionManager class
+    am = ActionManager(1)  # TODO -- pass in correct id
+
     # Coach Bot Conversation Loop
     while True:
         print("What can I do for you? Hit [Return]/[Enter] to exit.")
@@ -98,7 +102,7 @@ def main():
             if(_input == ""):
                 exit(0)
             action = NaturalLanguageProcessor.process_input(_input)
-            action.execute()
+            am.enqueue(action)   # add action to pipeline
             print("\n\n")
         except InputError as ie:
             print("Error processing: {input_str}\n{error_msg}".format(input_str=ie.expression, error_msg=ie.message))

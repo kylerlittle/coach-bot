@@ -11,6 +11,21 @@ from event_calendar import Calendar
 from event import Event
 from feedback import FeedBack
 
+class ActionManager:
+    def __init__(self, user_id):
+        self._user_id = user_id
+        self.pipeline = []
+
+    def enqueue(self, action):
+        action.setCalendar(self._user_id)
+        self.pipeline.append(action)
+        self.__run_jobs__()
+
+    def __run_jobs__(self):
+        while not self.pipeline:
+            action = self.pipeline.pop(0)  # dequeue front
+            action.execute()
+
 # Abstract Base Action Class
 class Action:
     def __init__(self, _details={}):
@@ -22,6 +37,10 @@ class Action:
 
     def execute(self):
         raise NotImplementedError('Action is an abstract base class; execute() is purely virtual.')
+    
+    def setCalendar(self, user_id):
+        # self.calendar = calendar that matches user_id
+        pass
         
 # Action subclasses here...
 class HelpAction(Action):
