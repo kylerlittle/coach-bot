@@ -6,17 +6,11 @@ class Workout(Event):
 
     def __init__(self, id = 0, calendarId = 0, 
     description = "", location = "", startDateTime = datetime.datetime.now(), 
-    endDateTime = datetime.datetime.now(), userId = -1, feedback = "", ):
+    endDateTime = datetime.datetime.now(), userId = -1, feedback = "", calories = 0, tags = [""]):
         self._feedback = FeedBack()
         self._calories = 0
         self._tags = [""]
         Event.__init__(self)
-
-    def Workout(self, calories = 0, tags = [""]):
-        self._feedback = feedback
-        self._calories = calories
-        self._tags = tags
-        Event.Event()
 
     def setFeedBack(self, feedBack):
         self._feedback(feedBack)
