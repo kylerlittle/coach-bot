@@ -33,6 +33,9 @@ class ActionManager:
             action = self.pipeline.pop(0)  # dequeue front
             action.execute()
 
+#TODO: Have a function in Calendar class
+#      that returns an event based on time or tags
+
 # Abstract Base Action Class
 class Action:
     def __init__(self, _details={}):
@@ -79,7 +82,9 @@ class ScheduleWorkoutAction(Action):
         loc = input("Enter the location: ")
         calo = input("Enter calories to be burned: ")
         if "tags" in self.details:
-            e.updateDescription(self.details["tags"])
+            e.setTags(self.details["tags"])
+            for tag in self.details["tags"]):
+                e.updateDescription(self.details["tags"])
         if "time" in self.details:
             e.updateStartTime(self.details["time"])
         e.updateLocation(loc)
@@ -135,6 +140,7 @@ class DisplayCalendarAction(Action):
             print(self.calendar)
 
 # Display workout stats
+# TODO: Implementation of Calendar Class needs to be changed
 class DisplayWorkoutStatsAction(Action): 
     def execute(self):
         print(self.current_stats)
@@ -148,16 +154,17 @@ class DisplayWorkoutScheduleAction(Action):
         else:
             self.calendar.showWorkouts()
 
-# TODO: use Workout class?
+# TODO: Implementation of Calendar Class needs to be changed
 class SetFeedbackAction(Action):
     def execute(self):
+        # Need to grab a Workout instance from Calendar class
         r = input("How would you rate this:")
         self.fb.setRating(r)
         c = input("Give us a comment:")
         self.fb.setComment(c)
 
-# TODO: change calories of user??
+# TODO: Implementation of Calendar Class needs to be changed
 class SetCaloriesAction(Action):
     def execute(self):
-        print(self.details)
+        # Need to grab a Workout instance from Calendar class
         self.calories = input("Setting the calorie intake:")
