@@ -7,9 +7,15 @@
 > This needs a lot of work. We don't even account for which user is which, and we
   completely neglect the details that the user gives us (stored in self.details).
 """
+from pytz import timezone
+import parsedatetime
 from event_calendar import Calendar
+from workout import Workout
 from event import Event
 from feedback import FeedBack
+
+DEFAULT_TIMEZONE = "US/Pacific"
+cal = parsedatetime.Calendar()
 
 # Abstract Base Action Class
 class Action:
@@ -31,43 +37,78 @@ class HelpAction(Action):
         print("   - Schedule")
         print("   - Enter")
         print("   - Display")
+        print("   - Set")
         print("2. Enter a noun.")
         print("   - most recent workout")
         print("   - workout schedule")
         print("   - feedback")
         print("   - workout stats")
+        print("   - calories")
         print("3. Optionally specify a time.")
         print("   - on Tuesday")
         print("   - for tomorrow")
         print("   - at 5PM tomorrow")
         print("e.g. Display my most recent workout")
 
+# Create a Workout event and add to Calendar
 class ScheduleWorkoutAction(Action):
     def execute(self):
         # Create event
-        e = Event()
-        desc = input("Enter the description of the work out: ")
+        e = Event() #Workout()
         loc = input("Enter the location: ")
-        e.updateDescription(desc)
+        if "tags" in self.details:
+            e.updateDescription(self.details["tags"])
+        if "time" in self.details:
+            e.updateStartTime(self.details["time"])
         e.updateLocation(loc)
+
+        # User verification
+        print(e) # Cannot print out Workout
+        resume = input("Is this what you wanted to add? (y/n): ")
+        while resume == 'n':
+            print("Start time")
+            print("End time")
+            print("Description")
+            print("Location")
+            e_change = input("What would you like to change?: ")
+
+            # Not sure how to update time using user input
+            # I would like to use the function from tokens_to_action
+            # get_datetime_from_str
+
+            # I would like to naturally process
+            # what they would like to change
+            print(e)
+            resume = input("Is this what you wanted to add (y/n): ")
 
         # Add to calendar
         self.calendar.addToCalendar(e)
-        
+
+# Display all events on calendar
+# If a time is given, show events only at that time
 class DisplayCalendarAction(Action):
     def execute(self):
         print("Your Calendar:")
-        print(self.calendar)
+        if "time" in self.details:
+            self.calendar.showEventsDay(self.details["time"])
+        else:
+            print(self.calendar)
 
+# Display workout stats
 class DisplayWorkoutStatsAction(Action): 
     def execute(self):
         print(self.current_stats)
 
+# Display workout events on calendar
+# If a time is given, show events only at that time
 class DisplayWorkoutScheduleAction(Action):
     def execute(self):
-        print(self.details)
-        self.calendar.showWorkouts()
+        if "time" in self.details:
+            self.calendar.showWorkoutsDay(self.details["time"])
+        else:
+            self.calendar.showWorkouts()
 
+# TODO: use Workout class?
 class SetFeedbackAction(Action):
     def execute(self):
         r = input("How would you rate this:")
@@ -75,6 +116,7 @@ class SetFeedbackAction(Action):
         c = input("Give us a comment:")
         self.fb.setComment(c)
 
+# TODO: change calories of user??
 class SetCaloriesAction(Action):
     def execute(self):
         print(self.details)
