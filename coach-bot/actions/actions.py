@@ -9,16 +9,26 @@
 """
 from pytz import timezone
 import parsedatetime
+import datetime
 from event_calendar import Calendar
 from workout import Workout
 from event import Event
 from feedback import FeedBack
+from rating import Rating
 
 DEFAULT_TIMEZONE = "US/Pacific"
 cal = parsedatetime.Calendar()
 
-#TODO: Have a function in Calendar class
-#      that returns an event based on time or tags
+# TODO: Need a method to figure out what workout obj user wants
+#       from calendar
+# Classes: DisplayWorkoutStatsAction
+#          SetFeedBackAction
+#          SetCaloriesAction
+# All it does now is return the first workout obj in the list.
+
+# TODO: Need an edit workout function for Calendar class
+#       Not sure if the current implementation actually
+#       changes the workout object reference from the calendar or not
 
 # Abstract Base Action Class
 class Action:
@@ -73,7 +83,7 @@ class ScheduleWorkoutAction(Action):
         # User verification
         #print(e) # Cannot print out Workout
         resume = input("Is this what you wanted to add? (y/n): ")
-        while resume == 'n':
+        while resume != 'y':
             print("Start time")
             print("End time")
             print("Description")
@@ -84,11 +94,11 @@ class ScheduleWorkoutAction(Action):
 
             # Is there an easier way to process user input?
             if e_change == "Start time":
-               datetime_obj, _ = cal.parseDT(datetimeString=newData, tzinfo=timezone(DEAFULT_TIMEZONE))
+               datetime_obj, _ = cal.parseDT(datetimeString=newData, tzinfo=timezone(DEFAULT_TIMEZONE))
                e.updateStartTime(datetime_obj) 
 
             elif e_change == "End time":
-               datetime_obj, _ = cal.parseDT(datetimeString=newData, tzinfo=timezone(DEAFULT_TIMEZONE))
+               datetime_obj, _ = cal.parseDT(datetimeString=newData, tzinfo=timezone(DEFAULT_TIMEZONE))
                e.updateEndTime(datetime_obj)
 
             elif e_change == "Description":
@@ -120,10 +130,26 @@ class DisplayCalendarAction(Action):
             print(self.calendar)
 
 # Display workout stats
-# TODO: Implementation of Calendar Class needs to be changed
 class DisplayWorkoutStatsAction(Action): 
     def execute(self):
-        print(self.current_stats)
+        # Get workout instance
+        if "time" in self.details:
+           ws = self.calendar.getWorkout(self.details["time"])
+           if ws is None:
+               print("No such workout exists.")
+           else:
+               w = ws[0] # Get first workout instance
+               # Get duration of workout
+               diff = w.getEndDate() - w.getStartDate()
+               dur = divmod(diff.days * 86400 + diff.seconds, 60)
+               print("Duration: {%M:%S}".format(dur))
+
+               print("Calories: " + w.getCalories())
+               print("Tags: ")
+               for tag in self.details["time"]):
+                   print(tag + "/")
+        else:
+            print("Unsure what workout is specified.")
 
 # Display workout events on calendar
 # If a time is given, show events only at that time
@@ -134,17 +160,41 @@ class DisplayWorkoutScheduleAction(Action):
         else:
             self.calendar.showWorkouts()
 
-# TODO: Implementation of Calendar Class needs to be changed
+# Set feeback of the workout event
 class SetFeedbackAction(Action):
     def execute(self):
-        # Need to grab a Workout instance from Calendar class
-        r = input("How would you rate this:")
-        self.fb.setRating(r)
-        c = input("Give us a comment:")
-        self.fb.setComment(c)
 
-# TODO: Implementation of Calendar Class needs to be changed
+        # Get workout event
+        if "time" in self.details:
+            ws = self.calendar.getWorkout(self.details["time"])
+            if ws is None:
+                print("No such workout exists")
+            else:
+                w = ws[0] # Get first workout instance
+                # Create new feedback
+                f = FeedBack()
+                r = input("How would you rate this workout out of 5: ")
+                f.setRating(r)
+                c = input("Give us a comment: ")
+                f.setComment(c)
+
+                # Edit workout event feedback
+                w.setFeedBack(f)
+        else:
+            print("Unsure what workout is specified.")
+
+# Set calories of the workout event 
 class SetCaloriesAction(Action):
     def execute(self):
-        # Need to grab a Workout instance from Calendar class
-        self.calories = input("Setting the calorie intake:")
+        
+        # Get workout event
+        if "time" in self.details:
+            ws = self.calendar.getWorkout(self.details["time"])
+            if ws is None:
+                print("No such workout exists")
+            else:
+                w = ws[0] # Get first workout
+                c = input("Setting the calorie intake: ")
+                w.setCalories(c)
+        else:
+            print("Unsure what workout is specified.")
