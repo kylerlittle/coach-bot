@@ -1,4 +1,4 @@
-#from nlp.tokens_to_action import NaturalLanguageProcessor, InputError
+from nlp.tokens_to_action import NaturalLanguageProcessor, InputError
 import xml.etree.ElementTree as ET
 import uuid
 from user import User
