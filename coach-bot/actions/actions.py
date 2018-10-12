@@ -11,6 +11,8 @@ from event_calendar import Calendar
 from event import Event
 from feedback import FeedBack
 
+debug = True
+
 class ActionManager:
     def __init__(self, user_id):
         self._user_id = user_id
@@ -22,7 +24,7 @@ class ActionManager:
         self.__run_jobs__()
 
     def __run_jobs__(self):
-        while not self.pipeline:
+        while self.pipeline:
             action = self.pipeline.pop(0)  # dequeue front
             action.execute()
 
@@ -40,7 +42,7 @@ class Action:
     
     def setCalendar(self, user_id):
         # self.calendar = calendar that matches user_id
-        pass
+        if debug: print(user_id)
         
 # Action subclasses here...
 class HelpAction(Action):

@@ -90,7 +90,7 @@ def main():
 """)
 
     # Declare ActionManager class
-    am = ActionManager(1)  # TODO -- pass in correct id
+    am = ActionManager(user.getUserId())  # TODO -- pass in correct id
 
     # Coach Bot Conversation Loop
     while True:
