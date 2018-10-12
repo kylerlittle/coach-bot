@@ -21,7 +21,7 @@ def main():
 
             user.User(email, fName, lName, str(newId))
 
-            tree = ET.parse('Users.xml')
+            tree = ET.parse('coach-bot/Users.xml')
             root = tree.getroot()
 
             newUser = ET.Element('user')
@@ -43,7 +43,7 @@ def main():
 
 
             root.append(newUser)
-            tree.write('Users.xml')
+            tree.write('coach-bot/Users.xml')
 
             print("User {} successfully added!".format(user.getFullName()))
             break
@@ -60,6 +60,9 @@ def main():
                     print("\nExisting user found!\n")
                     user.User(child[2].text, child[0].text, child[1].text, child.get('id'))
                     break
+            else:
+                print("\nNo existing user with email: {e}\n".format(e=email))
+                continue
             
             print("Welcome back {}\n".format(user.getFullName()))
             break
