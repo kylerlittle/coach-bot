@@ -26,4 +26,6 @@ class User():
         pass
         # return self.calendar
 
+    def getUserId(self):
+        return self.userId
        

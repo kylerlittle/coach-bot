@@ -2,6 +2,7 @@ from nlp.tokens_to_action import NaturalLanguageProcessor, InputError
 import xml.etree.ElementTree as ET
 import uuid
 from user import User
+from actions.actions import ActionManager
 
 def main():
     print('Welcome to coachbot!')
@@ -21,7 +22,7 @@ def main():
 
             user.User(email, fName, lName, str(newId))
 
-            tree = ET.parse('Users.xml')
+            tree = ET.parse('coach-bot/Users.xml')
             root = tree.getroot()
 
             newUser = ET.Element('user')
@@ -43,7 +44,7 @@ def main():
 
 
             root.append(newUser)
-            tree.write('Users.xml')
+            tree.write('coach-bot/Users.xml')
 
             print("User {} successfully added!".format(user.getFullName()))
             break
@@ -60,6 +61,9 @@ def main():
                     print("\nExisting user found!\n")
                     user.User(child[2].text, child[0].text, child[1].text, child.get('id'))
                     break
+            else:
+                print("\nNo existing user with email: {e}\n".format(e=email))
+                continue
             
             print("Welcome back {}\n".format(user.getFullName()))
             break
@@ -85,6 +89,9 @@ def main():
  `._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._,'
 """)
 
+    # Declare ActionManager class
+    am = ActionManager(user.getUserId())  # TODO -- pass in correct id
+
     # Coach Bot Conversation Loop
     while True:
         print("What can I do for you? Hit [Return]/[Enter] to exit.")
@@ -95,7 +102,7 @@ def main():
             if(_input == ""):
                 exit(0)
             action = NaturalLanguageProcessor.process_input(_input)
-            action.execute()
+            am.enqueue(action)   # add action to pipeline
             print("\n\n")
         except InputError as ie:
             print("Error processing: {input_str}\n{error_msg}".format(input_str=ie.expression, error_msg=ie.message))
