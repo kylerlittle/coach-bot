@@ -1,5 +1,6 @@
 from nlp.tokens_to_action import NaturalLanguageProcessor, InputError
 import xml.etree.ElementTree as ET
+import uuid
 from user import User
 from actions.actions import ActionManager
 
@@ -16,17 +17,13 @@ def main():
             lName = input("What is your last name?: ")
             email = input("What is your email address?: ")
 
-            user.User(email, fName, lName)
+            ##Determine new id for user
+            newId = uuid.uuid4()
+
+            user.User(email, fName, lName, str(newId))
 
             tree = ET.parse('coach-bot/Users.xml')
             root = tree.getroot()
-
-            ##Determine new id for user
-            newId = 0
-            for child in root:
-                
-                if child.attrib.get('id') >= str(newId):
-                    newId = int(child.attrib.get('id')) + 1
 
             newUser = ET.Element('user')
             newUser.set('id', str(newId))
@@ -62,8 +59,11 @@ def main():
             for child in root:
                 if child[2].text == email:
                     print("\nExisting user found!\n")
-                    user.User(child[2].text, child[0].text, child[1].text)
+                    user.User(child[2].text, child[0].text, child[1].text, child.get('id'))
                     break
+            else:
+                print("\nNo existing user with email: {e}\n".format(e=email))
+                continue
             
             print("Welcome back {}\n".format(user.getFullName()))
             break
