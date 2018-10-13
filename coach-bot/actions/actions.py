@@ -93,7 +93,7 @@ class ScheduleWorkoutAction(Action):
         calo = input("Enter calories to be burned: ")
         if "tags" in self.details:
             e.setTags(self.details["tags"])
-            for tag in self.details["tags"]):
+            for tag in self.details["tags"]:
                 e.updateDescription(self.details["tags"])
         if "time" in self.details:
             e.updateStartTime(self.details["time"])
@@ -166,7 +166,7 @@ class DisplayWorkoutStatsAction(Action):
 
                print("Calories: " + w.getCalories())
                print("Tags: ")
-               for tag in self.details["time"]):
+               for tag in self.details["tags"]:
                    print(tag + "/")
         else:
             print("Unsure what workout is specified.")
