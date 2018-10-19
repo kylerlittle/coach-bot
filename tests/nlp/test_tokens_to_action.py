@@ -4,9 +4,11 @@ from datetime import datetime
 from pytz import timezone
 import importlib
 nlp = importlib.import_module("coach-bot.nlp.tokens_to_action")
-# nlp = __import__("coach-bot.nlp.tokens_to_action")  # import it this way since hyphenated
 
 class MockToken(object):
+    """Mock spaCy's Token Class, at least in terms of how it's
+    used in TokensToActionConverter class.
+    """
     def __init__(self, text, dep, lemma):
         self._text = text
         self._dep = dep
@@ -72,7 +74,7 @@ class TestTokensToAction(unittest.TestCase):
         mocked_parseDT.return_value = (datetime(2018, 10, 5), None)
         self.assertEquals(self.ttac.get_datetime_from_str(""), datetime(2018, 10, 5))
         mocked_parseDT.assert_called_once_with(datetimeString="", tzinfo=timezone('US/Pacific'))
-        mocked_parseDT.reset_mock()
+        mocked_parseDT.reset_mock()  # reset mock call counter
         self.assertEquals(self.ttac.get_datetime_from_str("5 PM tomorrow"), datetime(2018, 10, 5))
         mocked_parseDT.assert_called_once_with(datetimeString="5 PM tomorrow", tzinfo=timezone('US/Pacific'))
 
@@ -89,7 +91,13 @@ class TestTokensToAction(unittest.TestCase):
         self.ttac.get_datetime_from_str.assert_called_once_with("5 PM tomorrow")
 
     def test_get_what_from_tok_list(self):
-        pass
+        """Test getting the first instance of token.lemma_ that satisfies dep_ == what (2nd arg)
+        """
+        self.assertEqual(self.ttac.get_what_from_tok_list(self.tl1, "WHAT"), "")  # test with empty list
+        self.assertEqual(self.ttac.get_what_from_tok_list(self.tl4, "NOT_FOUND"), "")  # test with non-empty list, but unfound
+        self.assertEqual(self.ttac.get_what_from_tok_list(self.tl4, "ROOT"), "schedule")  # test found in first pos
+        self.assertEqual(self.ttac.get_what_from_tok_list(self.tl4, "WHAT"), "workout")   # test found in middle pos
+        self.assertNotEqual(self.ttac.get_what_from_tok_list(self.tl4, "TIME"), "tomorrow") # test not found in last pos
 
     def test_get_action_receiver_attrs(self):
         pass
