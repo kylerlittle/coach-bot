@@ -87,25 +87,15 @@ class TokensToActionConverter:
         """
         return self.get_datetime_from_str(self.get_time_str(self.get_time_toks(tok_list)))
 
-    def get_root_action(self, tok_list):
+    def get_what_from_tok_list(self, tok_list, what):
         """Return the root action from the token list.
 
         :params
         tok_list -- list of spaCy Tokens as determined by the nlp model where we trained intent
+        what -- a string (matching Token.dep_) that you want to find in tok_list
         """
         try:
-            return tok_list[[t.dep_ for t in tok_list].index('ROOT')].lemma_
-        except ValueError:
-            return ""
-
-    def get_action_receiver(self, tok_list):
-        """Return the action receiver from the token list.
-
-        :params
-        tok_list -- list of spaCy Tokens as determined by the nlp model where we trained intent
-        """
-        try:
-            return tok_list[[t.dep_ for t in tok_list].index('WHAT')].lemma_
+            return tok_list[[t.dep_ for t in tok_list].index(what)].lemma_
         except ValueError:
             return ""
 
@@ -125,8 +115,8 @@ class TokensToActionConverter:
         :params
         tok_list -- list of spaCy Tokens as determined by the nlp model where we trained intent
         """
-        root_action = self.get_root_action(tok_list)
-        action_receiver = self.get_action_receiver(tok_list)
+        root_action = self.get_what_from_tok_list(tok_list, 'ROOT')
+        action_receiver = self.get_what_from_tok_list(tok_list, 'WHAT')
         action_receiver_attrs = self.get_action_receiver_attrs(tok_list, action_receiver)
         datetime_obj = self.get_datetime_from_tok_list(tok_list)
         return root_action, action_receiver, action_receiver_attrs, datetime_obj
