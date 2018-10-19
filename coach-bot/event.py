@@ -1,5 +1,5 @@
 import datetime
-from user import User
+import random
 
 class Event:
     def __init__(self):
@@ -9,12 +9,16 @@ class Event:
         self._location = ""
         self._startDateTime = datetime.datetime.now()
         self._endDateTime = datetime.datetime.now() + datetime.timedelta(minutes=60)
-        self._user = User()
+        self._userId = -1
     
-    def Event(self, id = 0, calendarId = 0, 
+    def Event(self, id = -1, calendarId = 0, 
     description = "", location = "", startDateTime = datetime.datetime.now(), 
-    endDateTime = datetime.datetime.now(), user = User()):
-        self._id = id
+    endDateTime = datetime.datetime.now(), user = 0):
+        #generate a random int
+        if(id == -1):
+            self._id = random.randint(600)
+        else:
+             self._id = id
         self._calendarId = calendarId
         self._description = description
         self._location = location
@@ -37,12 +41,10 @@ class Event:
 
     #overwrite str
     def __str__(self):
-        return str(
-            ("----------\nid: {0}\ncalendarId: {1}\ndescription: {2}",
-            self._id, self._calendarId, self._description)+
-            ("\nstart time: {0}\nend time: {1}\nuser: {2}\n----------",
-            self._startDateTime, self._endDateTime, self._user)
-        )
+        return "----------\nid: {0}\ncalendarId: {1}\ndescription: {2}".format(
+            self._id, self._calendarId, self._description) + \
+                "\nstart time: {0}\nend time: {1}\nuser: {2}\n----------".format(
+            self._startDateTime.date(), self._endDateTime.date(), self._userId)
     
     def getCalendarId(self):
         return self._calendarId

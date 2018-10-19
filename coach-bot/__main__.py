@@ -1,70 +1,20 @@
 from nlp.tokens_to_action import NaturalLanguageProcessor, InputError
-import xml.etree.ElementTree as ET
-from user import User
+from coachbot import CoachBot
+from actions.actions import ActionManager
 
 def main():
     print('Welcome to coachbot!')
-    user = User()
+    coachbot = CoachBot()
 
     while True:
         userOption = input('Please select an option:\n1: New User\n2: Existing User\n3: Exit application\n::')
 
         if userOption == '1':
-            print("\nLet's create a new user!\n")
-            fName = input("What is your first name?: ")
-            lName = input("What is your last name?: ")
-            email = input("What is your email address?: ")
-
-            user.User(email, fName, lName)
-
-            tree = ET.parse('coach-bot/Users.xml')
-            root = tree.getroot()
-
-            ##Determine new id for user
-            newId = 0
-            for child in root:
-                
-                if child.attrib.get('id') >= str(newId):
-                    newId = int(child.attrib.get('id')) + 1
-
-            newUser = ET.Element('user')
-            newUser.set('id', str(newId))
-            newUser.tail = "\n"
-
-            fNameElement = ET.SubElement(newUser, 'FirstName')
-            fNameElement.text = fName
-            fNameElement.tail = "\n"
-
-            lNameElement = ET.SubElement(newUser, 'LastName')
-            lNameElement.text = lName
-            lNameElement.tail = "\n"
-
-            emailElement = ET.SubElement(newUser, 'Email')
-            emailElement.text = email
-            emailElement.tail = "\n"
-            print(emailElement.text)
-
-
-            root.append(newUser)
-            tree.write('coach-bot/Users.xml')
-
-            print("User {} successfully added!".format(user.getFullName()))
+            coachbot.createNewUser()
             break
         
         elif userOption == '2':
-            print("\nLet's work with an existing user!\n")
-            email = input("What is your email address?: ")
-
-            tree = ET.parse('coach-bot/Users.xml')
-            root = tree.getroot()
-
-            for child in root:
-                if child[2].text == email:
-                    print("\nExisting user found!\n")
-                    user.User(child[2].text, child[0].text, child[1].text)
-                    break
-            
-            print("Welcome back {}\n".format(user.getFullName()))
+            coachbot.getCurrentUser()
             break
 
         elif userOption == '3':
@@ -76,17 +26,10 @@ def main():
             print("\nI'm sorry, that wasn't one of the options, let's try that again!\n")
 
     # Commence the conversation with Coach Bot.
-    print("""   _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._
- ,'_.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._`.
-( (                                                         ) )
- ) )  Hello! I am your personal coach. Ask me to schedule  ( (
-( (   you a workout, display your current schedule, show    ) )
- ) )  your workout stats, or give feedback on a prior      ( (
-( (   workout. Remember, ask for help if you're confused!   ) )
- ) )                                                       ( (
-( (_.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._) )
- `._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._,'
-""")
+    coachbot.printIntro()
+
+    # Declare ActionManager class
+    am = ActionManager(coachbot.getCurrentUserId())  # TODO -- pass in correct id
 
     # Coach Bot Conversation Loop
     while True:
@@ -98,7 +41,7 @@ def main():
             if(_input == ""):
                 exit(0)
             action = NaturalLanguageProcessor.process_input(_input)
-            action.execute()
+            am.enqueue(action)   # add action to pipeline
             print("\n\n")
         except InputError as ie:
             print("Error processing: {input_str}\n{error_msg}".format(input_str=ie.expression, error_msg=ie.message))
