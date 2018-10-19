@@ -1,4 +1,5 @@
-from nlp.tokens_to_action import NaturalLanguageProcessor, InputError
+from nlp.tokens_to_action import TokensToActionConverter, InputError
+from nlp.train_intent_parser import return_tokenized
 import xml.etree.ElementTree as ET
 import uuid
 from user import User
@@ -15,7 +16,7 @@ def createNewUser(user):
 
     user.User(email, fName, lName, str(newId))
 
-    tree = ET.parse('Users.xml')
+    tree = ET.parse('coach-bot/Users.xml')
     root = tree.getroot()
 
     newUser = ET.Element('user')
@@ -37,7 +38,7 @@ def createNewUser(user):
 
 
     root.append(newUser)
-    tree.write('Users.xml')
+    tree.write('coach-bot/Users.xml')
 
     print("User {} successfully added!".format(user.getFullName()))
 
@@ -45,7 +46,7 @@ def getCurrentUser(user):
     print("\nLet's work with an existing user!\n")
     email = input("What is your email address?: ")
 
-    tree = ET.parse('Users.xml')
+    tree = ET.parse('coach-bot/Users.xml')
     root = tree.getroot()
 
     for child in root:
@@ -97,6 +98,7 @@ def main():
 
     # Declare ActionManager class
     am = ActionManager(user.getUserId())  # TODO -- pass in correct id
+    ttac = TokensToActionConverter()
 
     # Coach Bot Conversation Loop
     while True:
@@ -107,11 +109,12 @@ def main():
             #exit if the user just hits return
             if(_input == ""):
                 exit(0)
-            action = NaturalLanguageProcessor.process_input(_input)
+            tok_list = return_tokenized([_input])
+            action = ttac.process_input(tok_list)
             am.enqueue(action)   # add action to pipeline
             print("\n\n")
         except InputError as ie:
-            print("Error processing: {input_str}\n{error_msg}".format(input_str=ie.expression, error_msg=ie.message))
+            print("Error processing: {input_str}\n{error_msg}".format(input_str=_input, error_msg=ie.message))
     
     # Basic Testing -- note this is never executed in the current set-up.
     test_texts = ["Schedule me a leg workout for 5PM tomorrow",
@@ -123,12 +126,13 @@ def main():
                   "Help me"]
     for test_text in test_texts:
         try:
-            action = NaturalLanguageProcessor.process_input(test_text)
+            tok_list = return_tokenized([test_text])
+            action = ttac.process_input(tok_list)
             print("INPUT: {user_input}".format(user_input=test_text))
             action.execute()
             print("\n\n")
         except InputError as ie:
-            print("Error processing: {input_str}\n{error_msg}".format(input_str=ie.expression, error_msg=ie.message))
+            print("Error processing: {input_str}\n{error_msg}".format(input_str=test_text, error_msg=ie.message))
 
 
 if __name__ == '__main__':
