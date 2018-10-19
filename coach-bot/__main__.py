@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from nlp.tokens_to_action import TokensToActionConverter, InputError
 from nlp.train_intent_parser import return_tokenized
 import xml.etree.ElementTree as ET
@@ -60,19 +61,25 @@ def getCurrentUser(user):
             
     print("Welcome back {}\n".format(user.getFullName()))
 
+=======
+from nlp.tokens_to_action import NaturalLanguageProcessor, InputError
+from coachbot import CoachBot
+from actions.actions import ActionManager
+
+>>>>>>> 01c74c1a3b2edb8cb2fb5f070537f23d83872d53
 def main():
     print('Welcome to coachbot!')
-    user = User()
+    coachbot = CoachBot()
 
     while True:
         userOption = input('Please select an option:\n1: New User\n2: Existing User\n3: Exit application\n::')
 
         if userOption == '1':
-            createNewUser(user)
+            coachbot.createNewUser()
             break
         
         elif userOption == '2':
-            getCurrentUser(user)
+            coachbot.getCurrentUser()
             break
 
         elif userOption == '3':
@@ -84,20 +91,10 @@ def main():
             print("\nI'm sorry, that wasn't one of the options, let's try that again!\n")
 
     # Commence the conversation with Coach Bot.
-    print("""   _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._
- ,'_.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._`.
-( (                                                         ) )
- ) )  Hello! I am your personal coach. Ask me to schedule  ( (
-( (   you a workout, display your current schedule, show    ) )
- ) )  your workout stats, or give feedback on a prior      ( (
-( (   workout. Remember, ask for help if you're confused!   ) )
- ) )                                                       ( (
-( (_.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._) )
- `._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._,'
-""")
+    coachbot.printIntro()
 
     # Declare ActionManager class
-    am = ActionManager(user.getUserId())  # TODO -- pass in correct id
+    am = ActionManager(coachbot.getCurrentUserId())  # TODO -- pass in correct id
     ttac = TokensToActionConverter()
 
     # Coach Bot Conversation Loop
