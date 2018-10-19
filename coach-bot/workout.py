@@ -10,7 +10,12 @@ class Workout(Event):
         self._feedback = FeedBack()
         self._calories = 0
         self._tags = [""]
-        Event.__init__(self)
+        self.Event(id, calendarId, description, location, startDateTime, endDateTime, userId)
+
+    def Workout(self, calories = 0, tags = [""]):
+        self._feedback = feedback
+        self._calories = calories
+        self._tags = tags
 
     def setFeedBack(self, feedBack):
         self._feedback(feedBack)
