@@ -100,12 +100,35 @@ class TestTokensToAction(unittest.TestCase):
         self.assertNotEqual(self.ttac.get_what_from_tok_list(self.tl4, "TIME"), "tomorrow") # test not found in last pos
 
     def test_get_action_receiver_attrs(self):
+        # List with no ATTRIBUTE dep's
+        # List with some ATTRIBUTE dep's
+        # List with all ATTRIBUTE dep's
         pass
 
     def test_initially_process_toks(self):
+        # Four mocks
+        # One test
+        # Four verifications
         pass
 
     def test_tokens_to_action(self):
+        # Need several mocks for self.ttac.initially_process_toks
+        # 1. ROOT schedule verb synonym
+        # 2. ROOT display verb synonym
+            # 2a. WHAT schedule noun synonym
+                # 2a i. ATTRIBUTE workout synonym
+                # 2a ii. ATTRIBUTE present but no workout synonym
+                # 2a iii. NO ATTRIBUTE
+            # 2b. WHAT statistics synonym
+            # 2c-d. WHAT is nonexistant or something random
+        # 3. ROOT enter verb synonym
+            # 3a. WHAT feedback synonym
+            # 3b. WHAT calories synonym
+            # 3c-d. WHAT is nonexistant or something random
+        # 4. ROOT help verb synonym
+        # 5-6. No ROOT or ROOT something random
+
+        # VERIFICATIONS!
         pass
 
     def tearDown(self):
