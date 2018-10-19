@@ -1,72 +1,8 @@
-<<<<<<< HEAD
-from nlp.tokens_to_action import TokensToActionConverter, InputError
 from nlp.train_intent_parser import return_tokenized
-import xml.etree.ElementTree as ET
-import uuid
-from user import User
-from actions.actions import ActionManager
-
-def createNewUser(user):
-    print("\nLet's create a new user!\n")
-    fName = input("What is your first name?: ")
-    lName = input("What is your last name?: ")
-    email = input("What is your email address?: ")
-
-    ##Determine new id for user
-    newId = uuid.uuid4()
-
-    user.User(email, fName, lName, str(newId))
-
-    tree = ET.parse('coach-bot/Users.xml')
-    root = tree.getroot()
-
-    newUser = ET.Element('user')
-    newUser.set('id', str(newId))
-    newUser.tail = "\n"
-
-    fNameElement = ET.SubElement(newUser, 'FirstName')
-    fNameElement.text = fName
-    fNameElement.tail = "\n"
-
-    lNameElement = ET.SubElement(newUser, 'LastName')
-    lNameElement.text = lName
-    lNameElement.tail = "\n"
-
-    emailElement = ET.SubElement(newUser, 'Email')
-    emailElement.text = email
-    emailElement.tail = "\n"
-    print(emailElement.text)
-
-
-    root.append(newUser)
-    tree.write('coach-bot/Users.xml')
-
-    print("User {} successfully added!".format(user.getFullName()))
-
-def getCurrentUser(user):
-    print("\nLet's work with an existing user!\n")
-    email = input("What is your email address?: ")
-
-    tree = ET.parse('coach-bot/Users.xml')
-    root = tree.getroot()
-
-    for child in root:
-        if child[2].text == email:
-            print("\nExisting user found!\n")
-            user.User(child[2].text, child[0].text, child[1].text, child.get('id'))
-            break
-        else:
-            print("\nNo existing user with email: {e}\n".format(e=email))
-            continue
-            
-    print("Welcome back {}\n".format(user.getFullName()))
-
-=======
-from nlp.tokens_to_action import NaturalLanguageProcessor, InputError
+from nlp.tokens_to_action import TokensToActionConverter, InputError
 from coachbot import CoachBot
 from actions.actions import ActionManager
 
->>>>>>> 01c74c1a3b2edb8cb2fb5f070537f23d83872d53
 def main():
     print('Welcome to coachbot!')
     coachbot = CoachBot()

@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, Mock, patch, call
 from datetime import datetime
 from pytz import timezone
 import importlib
@@ -9,10 +9,11 @@ class MockToken(object):
     """Mock spaCy's Token Class, at least in terms of how it's
     used in TokensToActionConverter class.
     """
-    def __init__(self, text, dep, lemma):
+    def __init__(self, text, dep, lemma, head=None):
         self._text = text
         self._dep = dep
         self._lemma = lemma
+        self._head = None if head is None else MockToken(head.text, head.dep_, head.lemma_)
     
     @property
     def text(self):
@@ -25,6 +26,10 @@ class MockToken(object):
     @property
     def lemma_(self):
         return self._lemma
+
+    @property
+    def head(self):
+        return self if self._head is None else self._head
 
 # ROOT MockTokens
 sched_root = [MockToken('schedule', 'ROOT', 'schedule'), MockToken('plan', 'ROOT', 'request'), 
@@ -40,6 +45,10 @@ class TestTokensToAction(unittest.TestCase):
         self.tl2 = [MockToken('5 PM', 'TIME', '5 PM'), MockToken('tomorrow', 'TIME', 'tomorrow')]          # TIME only
         self.tl3 = [MockToken('schedule', 'ROOT', 'schedule'), MockToken('workout', 'WHAT', 'workout')] # all not TIME
         self.tl4 = self.tl3 + self.tl2   # Mixture of TIME and not TIME
+        self.tl5 = [MockToken('arms', 'ATTRIBUTE', 'arm', self.tl4[1]), MockToken('cardio', 'ATTRIBUTE', 'cardio', self.tl4[1])]
+        self.tl6 = [MockToken(x.text, x.dep_, x.lemma_) for x in self.tl5]  # exclude HEAD
+        self.tl7 = self.tl4 + self.tl5
+        
 
     def test_process_input(self):
         """Test process_input, which can either raise an InputError or return an action
@@ -48,8 +57,8 @@ class TestTokensToAction(unittest.TestCase):
         self.ttac.tokens_to_action = Mock(side_effect=[(None, "anything"), ("whatever", "anything")])
         self.assertRaises(nlp.InputError, self.ttac.process_input, self.tl1)           # assert
         self.ttac.tokens_to_action.assert_called_with(self.tl1)                        # verify
-        self.assertEqual(self.ttac.process_input(["hi"]), "whatever")            # assert whatever is returned is same as stub[0]
-        self.ttac.tokens_to_action.assert_called_with(["hi"])                    # verify
+        self.assertEqual(self.ttac.process_input(self.tl2), "whatever")     # assert whatever is returned is same as stub[0]
+        self.ttac.tokens_to_action.assert_called_with(self.tl2)             # verify
 
     def test_get_time_toks(self):
         """Test filtering of token list to just TIME token list.
@@ -100,16 +109,27 @@ class TestTokensToAction(unittest.TestCase):
         self.assertNotEqual(self.ttac.get_what_from_tok_list(self.tl4, "TIME"), "tomorrow") # test not found in last pos
 
     def test_get_action_receiver_attrs(self):
-        # List with no ATTRIBUTE dep's
-        # List with some ATTRIBUTE dep's
-        # List with all ATTRIBUTE dep's
-        pass
+        # Empty list => []
+        self.assertEqual(self.ttac.get_action_receiver_attrs(self.tl1, 'workout'), [])
+        # List with no ATTRIBUTE dep's ==> []
+        self.assertEqual(self.ttac.get_action_receiver_attrs(self.tl4, 'workout'), [])
+        # List with some ATTRIBUTE dep's ==> ['attr1', 'attr2', ...]
+        self.assertEqual(self.ttac.get_action_receiver_attrs(self.tl7, 'workout'), ['arm', 'cardio'])
+        # List with all ATTRIBUTE dep's ==> [] since no action_receiver supplied
+        self.assertEqual(self.ttac.get_action_receiver_attrs(self.tl6, 'workout'), [])
 
     def test_initially_process_toks(self):
-        # Four mocks
-        # One test
-        # Four verifications
-        pass
+        # Mock external function call return values.
+        self.ttac.get_what_from_tok_list = Mock(side_effect=['schedule', 'workout'])
+        self.ttac.get_action_receiver_attrs = Mock(return_value=['leg', 'cardio'])
+        self.ttac.get_datetime_from_tok_list = Mock(return_value=datetime(2018, 11, 9))
+        # Actual test on function's return value
+        self.assertTupleEqual(('schedule', 'workout', ['leg', 'cardio'], datetime(2018, 11, 9)),
+            self.ttac.initially_process_toks(self.tl1))
+        # Verify behavior.
+        self.ttac.get_what_from_tok_list.assert_has_calls([call(self.tl1, 'ROOT'), call(self.tl1, 'WHAT')])
+        self.ttac.get_action_receiver_attrs.assert_called_once_with(self.tl1, 'workout')
+        self.ttac.get_datetime_from_tok_list.assert_called_once_with(self.tl1)
 
     def test_tokens_to_action(self):
         # Need several mocks for self.ttac.initially_process_toks
