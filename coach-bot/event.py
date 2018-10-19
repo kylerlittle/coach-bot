@@ -57,14 +57,14 @@ class Event:
         return self._endDateTime
 
     def export(self):
-		xmlstr += "\t<event>\n"
-		xmlstr += "\t\t<event id={0}>\n".format(self._id)
-		xmlstr += "\t\t\t<description>{0}</description>\n".format(self._description)	
-		xmlstr += "\t\t\t<location>{0}<\location>\n".format(self._location))
-		xmlstr += "\t\t\t<start>{0}<\start>\n".format(self._startDateTime)
-		xmlstr += "\t\t\t<end>{0}<\end>\n".format(self._endDateTime)
-		xmlstr += "\t\t<\event>\n"
-		return xmlstr	
+        xmlstr += "\t<event>\n"
+        xmlstr += "\t\t<event id={0}>\n".format(self._id)
+        xmlstr += "\t\t\t<description>{0}</description>\n".format(self._description)	
+        xmlstr += "\t\t\t<location>{0}<\location>\n".format(self._location)
+        xmlstr += "\t\t\t<start>{0}<\start>\n".format(self._startDateTime)
+        xmlstr += "\t\t\t<end>{0}<\end>\n".format(self._endDateTime)
+        xmlstr += "\t\t<\event>\n"
+        return xmlstr	
 
 
 

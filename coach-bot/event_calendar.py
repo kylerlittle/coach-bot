@@ -60,7 +60,7 @@ class Calendar:
 			xmlstr += "\t\t<\event>\n"
 		xmlstr += "\t<\events>"
 		xmlstr += "<\calendar>"
-		return xmlstr	
+		return xmlstr
 
 
 
