@@ -55,6 +55,12 @@ class Action:
         self.calendar = Calendar()
         self.fb = FeedBack()
 
+    def getDetails(self):
+        return self.details
+
+    def setDetails(self, _details):
+        self.details = _details
+
     def execute(self):
         raise NotImplementedError('Action is an abstract base class; execute() is purely virtual.')
     

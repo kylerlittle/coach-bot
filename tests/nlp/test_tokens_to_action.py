@@ -3,7 +3,8 @@ from unittest.mock import MagicMock, Mock, patch, call
 from datetime import datetime
 from pytz import timezone
 import importlib
-nlp = importlib.import_module("coach-bot.nlp.tokens_to_action")
+nlp = importlib.import_module("nlp.tokens_to_action")
+act = importlib.import_module("actions.actions")
 
 class MockToken(object):
     """Mock spaCy's Token Class, at least in terms of how it's
@@ -30,11 +31,6 @@ class MockToken(object):
     @property
     def head(self):
         return self if self._head is None else self._head
-
-# ROOT MockTokens
-sched_root = [MockToken('schedule', 'ROOT', 'schedule'), MockToken('plan', 'ROOT', 'request'), 
-              MockToken('schedule', 'ROOT', 'request'), MockToken('fdslkfsjldf', 'ROOT', 'fdslkfsjldf')]
-
 
 class TestTokensToAction(unittest.TestCase):
     def setUp(self):
@@ -72,7 +68,7 @@ class TestTokensToAction(unittest.TestCase):
         """Test getting time string from token list of only TIME tokens
         """
         self.assertTrue(self.ttac.get_time_str(self.tl1) == "")         # empty string for empty list
-        self.assertEqual(self.ttac.get_time_str(self.tl2), "5 PM tomorrow")
+        self.assertEqual(self.ttac.get_time_str(self.tl2), "5 PM tomorrow")  # normal value
     
     @patch('coach-bot.nlp.tokens_to_action.parsedatetime.Calendar.parseDT')
     def test_get_datetime_from_str(self, mocked_parseDT):
@@ -91,10 +87,12 @@ class TestTokensToAction(unittest.TestCase):
         """Test getting datetime object from token list. Only need one test value since this
         method is merely a combination of several methods, and we use mocking to stub their return values.
         """
+        # Stub method calls
         self.ttac.get_time_toks = Mock(return_value=self.tl2)
         self.ttac.get_time_str = Mock(return_value="5 PM tomorrow")
         self.ttac.get_datetime_from_str = Mock(return_value=datetime(2018, 10, 5))
-        self.assertEquals(self.ttac.get_datetime_from_tok_list(self.tl1), datetime(2018, 10, 5))
+        self.assertEquals(self.ttac.get_datetime_from_tok_list(self.tl1), datetime(2018, 10, 5))   # test
+        # Verify mocks were called.
         self.ttac.get_time_toks.assert_called_once_with(self.tl1)
         self.ttac.get_time_str.assert_called_once_with(self.tl2)
         self.ttac.get_datetime_from_str.assert_called_once_with("5 PM tomorrow")
@@ -109,6 +107,8 @@ class TestTokensToAction(unittest.TestCase):
         self.assertNotEqual(self.ttac.get_what_from_tok_list(self.tl4, "TIME"), "tomorrow") # test not found in last pos
 
     def test_get_action_receiver_attrs(self):
+        """ Test getting action receiver attributes from the token list.
+        """
         # Empty list => []
         self.assertEqual(self.ttac.get_action_receiver_attrs(self.tl1, 'workout'), [])
         # List with no ATTRIBUTE dep's ==> []
@@ -119,6 +119,9 @@ class TestTokensToAction(unittest.TestCase):
         self.assertEqual(self.ttac.get_action_receiver_attrs(self.tl6, 'workout'), [])
 
     def test_initially_process_toks(self):
+        """Test getting main components for natural language processing. Only one test needed since
+        method is merely a combination of several methods, and we use mocking to stub their return values.
+        """
         # Mock external function call return values.
         self.ttac.get_what_from_tok_list = Mock(side_effect=['schedule', 'workout'])
         self.ttac.get_action_receiver_attrs = Mock(return_value=['leg', 'cardio'])
@@ -132,24 +135,102 @@ class TestTokensToAction(unittest.TestCase):
         self.ttac.get_datetime_from_tok_list.assert_called_once_with(self.tl1)
 
     def test_tokens_to_action(self):
+        """Test the main tokens_to_action function. Given a token list, this function outputs the appropriate
+        Action subclass and error message (if any). This function tests this method using whitebox techniques.
+        The number of assertions and mocks in this function demonstrates that tokens_to_action should probably
+        be refactored.
+        """
         # Need several mocks for self.ttac.initially_process_toks
-        # 1. ROOT schedule verb synonym
+        self.ttac.initially_process_toks = Mock(side_effect=[
+            ('request', 'exercise', ['leg'], datetime(2018, 10, 19)),
+            ('see', 'calendar', ['workout', 'other'], datetime(2018, 10, 19)),
+            ('see', 'calendar', ['not workout synonym'], datetime(2018, 10, 19)),
+            ('show', 'stats', [], datetime(2018, 10, 20)),
+            ('display', '', ['workout'], datetime(2018, 10, 20)),
+            ('set', 'feedback', ['workout'], datetime(2018, 11, 20)),
+            ('enter', 'calorie', ['workout'], datetime(2018, 11, 20)),
+            ('enter', '', ['workout'], datetime(2018, 11, 20)),
+            ('assist', 'me', ['please'], datetime(2018, 12, 20)),
+            ('', '', [], datetime(2018, 11, 20)),
+            ('fdjskfldsjfls', 'fdlsjfld', ['sdf', 'sdfds'], datetime(2018, 11, 20))
+            ])
+        # 1. ROOT schedule verb synonym => Schedule a workout, no error
+        a, err = self.ttac.tokens_to_action(self.tl1)
+        self.assertIsInstance(a, act.ScheduleWorkoutAction)
+        self.assertEqual(err, "")
+        self.assertEqual(a.getDetails().get("time", None), datetime(2018, 10, 19))
+        self.assertEqual(a.getDetails().get("tags", None), ['leg'])
+        self.ttac.initially_process_toks.assert_called_once_with(self.tl1)
+        self.ttac.initially_process_toks.reset_mock()
         # 2. ROOT display verb synonym
             # 2a. WHAT schedule noun synonym
-                # 2a i. ATTRIBUTE workout synonym
-                # 2a ii. ATTRIBUTE present but no workout synonym
-                # 2a iii. NO ATTRIBUTE
-            # 2b. WHAT statistics synonym
-            # 2c-d. WHAT is nonexistant or something random
+                # 2a i. ATTRIBUTE workout synonym => Display Workout Calendar, no error
+        a, err = self.ttac.tokens_to_action(self.tl1)
+        self.assertIsInstance(a, act.DisplayWorkoutScheduleAction)
+        self.assertEqual(err, "")
+        self.assertEqual(a.getDetails().get("time", None), datetime(2018, 10, 19))
+        self.assertIsNone(a.getDetails().get("tags", None))
+        self.ttac.initially_process_toks.assert_called_once_with(self.tl1)
+        self.ttac.initially_process_toks.reset_mock()
+                # 2a ii. ATTRIBUTE has no workout synonym => Display Normal Calendar, no error
+        a, err = self.ttac.tokens_to_action(self.tl1)
+        self.assertIsInstance(a, act.DisplayCalendarAction)
+        self.assertEqual(err, "")
+        self.assertEqual(a.getDetails().get("time", None), datetime(2018, 10, 19))
+        self.assertIsNone(a.getDetails().get("tags", None))
+        self.ttac.initially_process_toks.assert_called_once_with(self.tl1)
+        self.ttac.initially_process_toks.reset_mock()
+            # 2b. WHAT statistics synonym => Display workout stats, no error msg
+        a, err = self.ttac.tokens_to_action(self.tl1)
+        self.assertIsInstance(a, act.DisplayWorkoutStatsAction)
+        self.assertEqual(err, "")
+        self.assertEqual(a.getDetails().get("time", None), datetime(2018, 10, 20))
+        self.assertIsNone(a.getDetails().get("tags", None))
+        self.ttac.initially_process_toks.assert_called_once_with(self.tl1)
+        self.ttac.initially_process_toks.reset_mock()
+            # 2c. WHAT is nonexistant => Action is None, error message present
+        a, err = self.ttac.tokens_to_action(self.tl1)
+        self.assertIsNone(a)
+        self.assertGreater(len(err), 0)
+        self.ttac.initially_process_toks.assert_called_once_with(self.tl1)
+        self.ttac.initially_process_toks.reset_mock()
         # 3. ROOT enter verb synonym
-            # 3a. WHAT feedback synonym
-            # 3b. WHAT calories synonym
-            # 3c-d. WHAT is nonexistant or something random
-        # 4. ROOT help verb synonym
-        # 5-6. No ROOT or ROOT something random
-
-        # VERIFICATIONS!
-        pass
+            # 3a. WHAT feedback synonym => Set feedback for workout, no error msg
+        a, err = self.ttac.tokens_to_action(self.tl1)
+        self.assertIsInstance(a, act.SetFeedbackAction)
+        self.assertEqual(err, "")
+        self.assertEqual(a.getDetails().get("time", None), datetime(2018, 11, 20))
+        self.assertIsNone(a.getDetails().get("tags", None))
+        self.ttac.initially_process_toks.assert_called_once_with(self.tl1)
+        self.ttac.initially_process_toks.reset_mock()
+            # 3b. WHAT calories synonym => Set calories for workout, no error msg
+        a, err = self.ttac.tokens_to_action(self.tl1)
+        self.assertIsInstance(a, act.SetCaloriesAction)
+        self.assertEqual(err, "")
+        self.assertEqual(a.getDetails().get("time", None), datetime(2018, 11, 20))
+        self.assertIsNone(a.getDetails().get("tags", None))
+        self.ttac.initially_process_toks.assert_called_once_with(self.tl1)
+        self.ttac.initially_process_toks.reset_mock()
+            # 3c. WHAT is nonexistant => Action is None, error message present
+        a, err = self.ttac.tokens_to_action(self.tl1)
+        self.assertIsNone(a)
+        self.assertGreater(len(err), 0)
+        self.ttac.initially_process_toks.assert_called_once_with(self.tl1)
+        self.ttac.initially_process_toks.reset_mock()
+        # 4. ROOT help verb synonym => Help Action, no error msg
+        a, err = self.ttac.tokens_to_action(self.tl1)
+        self.assertIsInstance(a, act.HelpAction)
+        self.assertEqual(err, "")
+        self.assertIsNone(a.getDetails().get("time", None))
+        self.assertIsNone(a.getDetails().get("tags", None))
+        self.ttac.initially_process_toks.assert_called_once_with(self.tl1)
+        self.ttac.initially_process_toks.reset_mock()
+        # 5-6. No ROOT or ROOT something random => Action is None, error message present
+        a, err = self.ttac.tokens_to_action(self.tl1)
+        self.assertIsNone(a)
+        self.assertGreater(len(err), 0)
+        self.ttac.initially_process_toks.assert_called_once_with(self.tl1)
+        self.ttac.initially_process_toks.reset_mock()
 
     def tearDown(self):
         self.ttac = None
