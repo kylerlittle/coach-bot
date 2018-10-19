@@ -17,4 +17,4 @@ class FeedBack():
         for self._rating in Rating:
             rating += "*"
 
-        return str("rating: {0}\ncomment: {1}\n", rating, self._comment)
+        return "rating: {0}\ncomment: {1}\n".format(rating, self._comment)

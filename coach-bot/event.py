@@ -2,8 +2,14 @@ import datetime
 import random
 
 class Event:
-    def __init__(self):
-        self._id = -1
+    def __init__(self, id = -1, calendarId = 0, 
+    description = "", location = "", startDateTime = datetime.datetime.now(), 
+    endDateTime = datetime.datetime.now(), user = 0):
+        #generate a random int
+        if(id == -1):
+            self._id = random.randint(0, 600)
+        else:
+             self._id = id
         self._calendarId = -1
         self._description = ""
         self._location = ""
@@ -11,20 +17,6 @@ class Event:
         self._endDateTime = datetime.datetime.now() + datetime.timedelta(minutes=60)
         self._userId = -1
     
-    def Event(self, id = -1, calendarId = 0, 
-    description = "", location = "", startDateTime = datetime.datetime.now(), 
-    endDateTime = datetime.datetime.now(), user = 0):
-        #generate a random int
-        if(id == -1):
-            self._id = random.randint(600)
-        else:
-             self._id = id
-        self._calendarId = calendarId
-        self._description = description
-        self._location = location
-        self._startDateTime = startDateTime
-        self._endDateTime = endDateTime
-        self._user = user
 
     #update setters
     def updateStartTime(self, newDateTime):
@@ -63,5 +55,16 @@ class Event:
     
     def getEndDate(self):
         return self._endDateTime
+
+    def export(self):
+        xmlstr += "\t<event>\n"
+        xmlstr += "\t\t<event id={0}>\n".format(self._id)
+        xmlstr += "\t\t\t<description>{0}</description>\n".format(self._description)	
+        xmlstr += "\t\t\t<location>{0}<\location>\n".format(self._location)
+        xmlstr += "\t\t\t<start>{0}<\start>\n".format(self._startDateTime)
+        xmlstr += "\t\t\t<end>{0}<\end>\n".format(self._endDateTime)
+        xmlstr += "\t\t<\event>\n"
+        return xmlstr	
+
 
 
