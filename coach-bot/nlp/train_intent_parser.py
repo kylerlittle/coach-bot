@@ -22,7 +22,7 @@ import spacy
 from pathlib import Path
 import en_core_web_sm
 
-MODEL_DIR = './coach-bot/nlp/model'
+MODEL_DIR = './coach-bot/nlp/model'  # this is the relative path from the project's root dir
 
 
 # training data: texts, heads and dependency labels
@@ -128,6 +128,18 @@ def test_model(nlp):
     for doc in docs:  # doc is a spaCy Token object
         print(doc.text)
         print([(t.text, t.dep_, t.head.text) for t in doc if t.dep_ != '-'])
+
+def return_tokenized(text):
+    """Tokenize the user's input text based on nlp model we trained.
+
+    :params
+    text -- raw input text from user
+    """
+    nlp = spacy.load(MODEL_DIR)
+    docs = nlp.pipe(text)
+    for doc in docs:
+        if doc is not None:
+            return [t for t in doc if t.dep_ != '-']
 
 if __name__ == '__main__':
     plac.call(main, ['-m', 'en', '-o', MODEL_DIR, '-n', '5'])
